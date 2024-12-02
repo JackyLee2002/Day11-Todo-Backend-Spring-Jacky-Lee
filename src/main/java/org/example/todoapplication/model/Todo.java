@@ -19,5 +19,4 @@ public class Todo {
     private Integer id;
     private String text;
     private boolean done;
-
 }
