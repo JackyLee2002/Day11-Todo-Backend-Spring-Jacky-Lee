@@ -28,7 +28,10 @@ public class TodoController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Todo createTodo(@RequestBody Todo todo){
-        return null;
+        if (todo.getId() != null) {
+            todo.setId(null);
+        }
+        return todoRepository.save(todo);
     }
 
     @PutMapping("/{id}")
