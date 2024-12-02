@@ -104,6 +104,53 @@ public class TodoControllerTest {
                 .andReturn().getResponse().getContentAsString();
     }
 
+    @Test
+    void should_remove_todo_when_delete_given_valid_todo_id() throws Exception {
+        // Given
+        final List<Todo> givenTodo = todoRepository.findAll();
+        int givenId = givenTodo.get(0).getId();
+
+        // When
+        // Then
+        client.perform(MockMvcRequestBuilders.delete("/todos/" + givenId))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+        List<Todo> todos = todoRepository.findAll();
+        assertThat(todos).hasSize(4);
+        assertThat(todos.get(0).getId()).isEqualTo(givenTodo.get(1).getId());
+        assertThat(todos.get(1).getId()).isEqualTo(givenTodo.get(2).getId());
+        assertThat(todos.get(2).getId()).isEqualTo(givenTodo.get(3).getId());
+        assertThat(todos.get(3).getId()).isEqualTo(givenTodo.get(4).getId());
+    }
+
+    @Test
+    void should_update_todo_when_update_given_valid_todo_body() throws Exception {
+        // Given
+        final List<Todo> givenTodos = todoRepository.findAll();
+        int givenId = givenTodos.get(0).getId();
+        String newText = "New Text";
+        boolean newDoneStatus = true;
+
+        String givenTodo = String.format("{\"id\": %s, \"text\": \"%s\", \"done\": \"%b\"}",
+                givenId,newText,newDoneStatus
+        );
+
+        // When
+        // Then
+        client.perform(MockMvcRequestBuilders.put("/todos/" + givenId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(givenTodo))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.text").value(newText))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.done").value(newDoneStatus));
+        List<Todo> todos = todoRepository.findAll();
+        assertThat(todos).hasSize(5);
+        assertThat(todos.get(0).getId()).isEqualTo(givenId);
+        assertThat(todos.get(0).getText()).isEqualTo(newText);
+        assertThat(todos.get(0).isDone()).isTrue();
+
+    }
+
 
 
 

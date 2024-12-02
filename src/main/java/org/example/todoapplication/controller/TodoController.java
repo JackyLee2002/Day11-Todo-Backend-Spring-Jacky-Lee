@@ -35,8 +35,11 @@ public class TodoController {
     }
 
     @PutMapping("/{id}")
-    public Todo updateTodo(@PathVariable Integer id, @RequestBody Todo todo){
-        return null;
+    public Todo updateTodo(@PathVariable Integer id, @RequestBody Todo todo) throws IllegalStateException{
+        Todo todoToUpdate = todoRepository.findById(id).orElseThrow(IllegalStateException::new);
+        todoToUpdate.setText(todo.getText());
+        todoToUpdate.setDone(todo.isDone());
+        return todoRepository.save(todoToUpdate);
     }
 
     @DeleteMapping("/{id}")
