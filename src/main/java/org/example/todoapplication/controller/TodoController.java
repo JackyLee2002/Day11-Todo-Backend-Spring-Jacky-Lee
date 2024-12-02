@@ -3,49 +3,41 @@ package org.example.todoapplication.controller;
 
 import org.example.todoapplication.model.Todo;
 import org.example.todoapplication.repository.TodoRepository;
+import org.example.todoapplication.service.TodoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.swing.text.html.Option;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/todos")
 public class TodoController {
 
-    private TodoRepository todoRepository;
+    private TodoService todoService;
 
-    public TodoController(TodoRepository todoRepository) {
-        this.todoRepository = todoRepository;
+    public TodoController(TodoService todoService) {
+        this.todoService = todoService;
     }
 
     @GetMapping
     public List<Todo> getAllTodoItems(){
-        return todoRepository.findAll();
+        return todoService.getAllTodoItems();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Todo createTodo(@RequestBody Todo todo){
-        if (todo.getId() != null) {
-            todo.setId(null);
-        }
-        return todoRepository.save(todo);
+        return todoService.createTodo(todo);
     }
 
     @PutMapping("/{id}")
     public Todo updateTodo(@PathVariable Integer id, @RequestBody Todo todo) throws IllegalStateException{
-        Todo todoToUpdate = todoRepository.findById(id).orElseThrow(IllegalStateException::new);
-        todoToUpdate.setText(todo.getText());
-        todoToUpdate.setDone(todo.isDone());
-        return todoRepository.save(todoToUpdate);
+        return todoService.updateTodo(id, todo);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTodo(@PathVariable Integer id) throws IllegalStateException {
-        Todo todo = todoRepository.findById(id).orElseThrow(IllegalStateException::new);
-        todoRepository.delete(todo);
+        todoService.deleteTodoById(id);
     }
 }
