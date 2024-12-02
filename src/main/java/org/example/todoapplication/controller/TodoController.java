@@ -1,6 +1,7 @@
 package org.example.todoapplication.controller;
 
 
+import org.example.todoapplication.exception.TodoNotFoundException;
 import org.example.todoapplication.model.Todo;
 import org.example.todoapplication.repository.TodoRepository;
 import org.example.todoapplication.service.TodoService;
@@ -31,13 +32,13 @@ public class TodoController {
     }
 
     @PutMapping("/{id}")
-    public Todo updateTodo(@PathVariable Integer id, @RequestBody Todo todo) throws IllegalStateException{
+    public Todo updateTodo(@PathVariable Integer id, @RequestBody Todo todo) throws TodoNotFoundException {
         return todoService.updateTodo(id, todo);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTodo(@PathVariable Integer id) throws IllegalStateException {
+    public void deleteTodo(@PathVariable Integer id) throws TodoNotFoundException {
         todoService.deleteTodoById(id);
     }
 }

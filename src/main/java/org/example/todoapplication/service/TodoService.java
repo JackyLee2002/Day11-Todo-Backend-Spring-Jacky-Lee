@@ -1,5 +1,6 @@
 package org.example.todoapplication.service;
 
+import org.example.todoapplication.exception.TodoNotFoundException;
 import org.example.todoapplication.model.Todo;
 import org.example.todoapplication.repository.TodoRepository;
 import org.springframework.stereotype.Service;
@@ -26,15 +27,16 @@ public class TodoService {
         return todoRepository.save(todo);
     }
 
-    public Todo updateTodo(Integer id, Todo todo) throws IllegalStateException {
-        Todo todoToUpdate = todoRepository.findById(id).orElseThrow(IllegalStateException::new);
+    public Todo updateTodo(Integer id, Todo todo) throws TodoNotFoundException {
+        Todo todoToUpdate = todoRepository.findById(id).orElseThrow(TodoNotFoundException::new);
         todoToUpdate.setText(todo.getText());
         todoToUpdate.setDone(todo.isDone());
         return todoRepository.save(todoToUpdate);
     }
 
     public void deleteTodoById(Integer id) {
-        todoRepository.deleteById(id);
+        Todo todoToDelete = todoRepository.findById(id).orElseThrow(TodoNotFoundException::new);
+        todoRepository.delete(todoToDelete);
     }
 
 
