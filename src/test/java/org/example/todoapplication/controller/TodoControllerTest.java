@@ -8,16 +8,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @SpringBootTest
@@ -54,5 +57,20 @@ public class TodoControllerTest {
                 .usingRecursiveFieldByFieldElementComparator()
                 .isEqualTo(givenTodos);
     }
+
+    @Test
+    void should_return_error_when_delete_given_todo_with_invalid_id() throws Exception {
+        // Given
+        Integer invalidId = -1;
+        // When
+        // Then
+        client.perform(MockMvcRequestBuilders.delete("/todos/" + invalidId))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
+    }
+
+
+
+
 
 }
