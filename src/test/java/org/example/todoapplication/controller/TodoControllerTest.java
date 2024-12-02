@@ -74,13 +74,13 @@ public class TodoControllerTest {
     void should_create_todo_success() throws Exception {
         // Given
         todoRepository.deleteAll();
-        String givenEmployee = "{\"text\": \"abc\", \"done\": \"false\"}";
+        String givenTodo = "{\"text\": \"abc\", \"done\": \"false\"}";
 
         // When
         // Then
         client.perform(MockMvcRequestBuilders.post("/todos")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(givenEmployee)
+                        .content(givenTodo)
                 )
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
